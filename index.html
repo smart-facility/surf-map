@@ -32,8 +32,8 @@
 	<div id="map">
 	</div>
 		<script>
-			var map = L.map('map',{center: [-34.6546339, 150.8570802],
-								 zoom: 17
+			var map = L.map('map',{center: [-34.6424883, 150.8659966],
+								 zoom: 14
 			});
 
 			var geoJsonToPoints = function(geoJson) {
@@ -60,7 +60,6 @@
 
 			$.ajax('example_1.gpx').done(function(gpx) {
 		    var track = toGeoJSON.gpx((new DOMParser()).parseFromString(gpx,'text/xml'));
-				console.log(track);
 				var linesLayer = L.geoJson(track);
 				linesLayer.addTo(map);
 				layerControl.addOverlay(linesLayer, 'Lines (example 1)');
@@ -68,19 +67,20 @@
 				console.log(points);
 				var heat = L.heatLayer(points, {"radius": 8}).addTo(map);
 				layerControl.addOverlay(heat,'Heatmap (example 1)');
+				$.ajax('example_2.gpx').done(function(gpx) {
+					var track = toGeoJSON.gpx((new DOMParser()).parseFromString(gpx,'text/xml'));
+					console.log(track);
+					var linesLayer = L.geoJson(track);
+					linesLayer.addTo(map);
+					layerControl.addOverlay(linesLayer, 'Lines (example 2)');
+					var points = geoJsonToPoints(track);
+					console.log(points);
+					var heat = L.heatLayer(points, {"radius": 8}).addTo(map);
+					layerControl.addOverlay(heat,'Heatmap (example 2)');
+				});
 			});
 
-			$.ajax('example_2.gpx').done(function(gpx) {
-				var track = toGeoJSON.gpx((new DOMParser()).parseFromString(gpx,'text/xml'));
-				console.log(track);
-				var linesLayer = L.geoJson(track);
-				linesLayer.addTo(map);
-				layerControl.addOverlay(linesLayer, 'Lines (example 2)');
-				var points = geoJsonToPoints(track);
-				console.log(points);
-				var heat = L.heatLayer(points, {"radius": 8}).addTo(map);
-				layerControl.addOverlay(heat,'Heatmap (example 2)');
-			});
+
 
 		</script>
 
