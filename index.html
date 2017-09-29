@@ -58,16 +58,28 @@
 
 			var layerControl = L.control.layers(baseLayers, overlays, {'position':'bottomleft'}).addTo(map);
 
-			$.ajax('example.gpx').done(function(gpx) {
+			$.ajax('example_1.gpx').done(function(gpx) {
 		    var track = toGeoJSON.gpx((new DOMParser()).parseFromString(gpx,'text/xml'));
 				console.log(track);
 				var linesLayer = L.geoJson(track);
 				linesLayer.addTo(map);
-				layerControl.addOverlay(linesLayer, 'Lines');
+				layerControl.addOverlay(linesLayer, 'Lines (example 1)');
 				var points = geoJsonToPoints(track);
 				console.log(points);
 				var heat = L.heatLayer(points, {"radius": 8}).addTo(map);
-				layerControl.addOverlay(heat,'Heatmap');
+				layerControl.addOverlay(heat,'Heatmap (example 1)');
+			});
+
+			$.ajax('example_2.gpx').done(function(gpx) {
+				var track = toGeoJSON.gpx((new DOMParser()).parseFromString(gpx,'text/xml'));
+				console.log(track);
+				var linesLayer = L.geoJson(track);
+				linesLayer.addTo(map);
+				layerControl.addOverlay(linesLayer, 'Lines (example 2)');
+				var points = geoJsonToPoints(track);
+				console.log(points);
+				var heat = L.heatLayer(points, {"radius": 8}).addTo(map);
+				layerControl.addOverlay(heat,'Heatmap (example 2)');
 			});
 
 		</script>
