@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Heatmap with Leaflet
+	</title>
+	<!-- link to leaflet css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+	<!-- map is full width and height of device -->
+	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
+	<style>
+		body{
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+		}
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+	<!-- remotely access the Leaflet.heatmap plugin -->
+	<script src="leaflet-heat.js"></script>
+	<script src="leaflet.ajax.min.js"></script>
+
+	<script src="togeojson.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+	<!-- leaflet js -->
+
+
+	<div id="map">
+	</div>
+		<script>
+			var map = L.map('map',{center: [-34.6546339, 150.8570802],
+								 zoom: 17
+			});
+
+			var geoJsonToPoints = function(geoJson) {
+				var pts = [];
+				for (var i =0; i < geoJson.features.length; i++) {
+					for (var j=0; j < geoJson.features[i].geometry.coordinates.length; j++) {
+						pts.push([geoJson.features[i].geometry.coordinates[j][1], geoJson.features[i].geometry.coordinates[j][0]])
+					}
+				}
+				return pts;
+			}
+
+
+			// OSM Baselayer
+			var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+
+			var baseLayers = {
+				"OSM": osm
+			};
+
+			var overlays = {};
+
+			var layerControl = L.control.layers(baseLayers, overlays, {'position':'bottomleft'}).addTo(map);
+
+			$.ajax('example.gpx').done(function(gpx) {
+		    var track = toGeoJSON.gpx((new DOMParser()).parseFromString(gpx,'text/xml'));
+				console.log(track);
+				var linesLayer = L.geoJson(track);
+				linesLayer.addTo(map);
+				layerControl.addOverlay(linesLayer, 'Lines');
+				var points = geoJsonToPoints(track);
+				console.log(points);
+				var heat = L.heatLayer(points, {"radius": 8}).addTo(map);
+				layerControl.addOverlay(heat,'Heatmap');
+			});
+
+		</script>
+
+</body>
+</html>
